@@ -9,8 +9,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Finance App',
-
-      /// TODO Replace with your first screen class name
       home: LoginScreen(),
     );
   }
