@@ -4,6 +4,42 @@ import 'package:fl_chart/fl_chart.dart';
 class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    List<PieChartSectionData> sections = [
+      PieChartSectionData(
+        color: Colors.blue,
+        value: 40, // Sample value
+        title: 'Food', // Sample label
+        radius: 175,
+      ),
+      PieChartSectionData(
+        color: Colors.green,
+        value: 30, // Sample value
+        title: 'Transport', // Sample label
+        radius: 175,
+      ),
+      PieChartSectionData(
+        color: Colors.red,
+        value: 20, // Sample value
+        title: 'Housing', // Sample label
+        radius: 175,
+      ),
+      PieChartSectionData(
+        color: Colors.orange,
+        value: 10, // Sample value
+        title: 'Entertainment', // Sample label
+        radius: 175,
+      ),
+    ];
+
+    // Sample line chart data
+    List<FlSpot> lineChartData = [
+      FlSpot(0, 10),
+      FlSpot(1, 15),
+      FlSpot(2, 12),
+      FlSpot(3, 14),
+      FlSpot(4, 10),
+    ];
+
     return Scaffold(
       backgroundColor: Color(0xffffffff),
       appBar: AppBar(
@@ -62,7 +98,30 @@ class DashboardScreen extends StatelessWidget {
               child: Container(
                 height: 200,
                 child: LineChart(
-                  LineChartData(), // Add LineChartData here
+                  LineChartData(
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: lineChartData,
+                        isCurved: true,
+                        colors: [Colors.blue],
+                        barWidth: 4,
+                        isStrokeCapRound: true,
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
+                    titlesData: FlTitlesData(
+                      show: true,
+                      leftTitles: SideTitles(showTitles: false),
+                      bottomTitles: SideTitles(showTitles: false),
+                    ),
+                    borderData: FlBorderData(
+                      show: true,
+                      border: Border.all(
+                        color: const Color(0xff37434d),
+                        width: 1,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -80,38 +139,50 @@ class DashboardScreen extends StatelessWidget {
             SizedBox(height: 10),
             Padding(
               padding: EdgeInsets.all(8.0),
-              child: Container(
-                height: 500,
-                child: PieChart(
-                  PieChartData(
-                    sections: [
-                      PieChartSectionData(
-                        color: Colors.blue,
-                        value: 40, // Sample value
-                        title: 'Food', // Sample label
-                        radius: 175,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      height: 500,
+                      child: ListView.builder(
+                        itemCount: sections.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final section = sections[index];
+                          return ListTile(
+                            leading: Icon(
+                              Icons.circle,
+                              color: section.color,
+                            ),
+                            title: Text(
+                              section.title,
+                              style: TextStyle(
+                                color: section.color,
+                              ),
+                            ),
+                            trailing: Text(
+                              '\$${section.value.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                      PieChartSectionData(
-                        color: Colors.green,
-                        value: 30, // Sample value
-                        title: 'Transport', // Sample label
-                        radius: 175,
-                      ),
-                      PieChartSectionData(
-                        color: Colors.red,
-                        value: 20, // Sample value
-                        title: 'Housing', // Sample label
-                        radius: 175,
-                      ),
-                      PieChartSectionData(
-                        color: Colors.orange,
-                        value: 10, // Sample value
-                        title: 'Entertainment', // Sample label
-                        radius: 175,
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      height: 500,
+                      child: PieChart(
+                        PieChartData(
+                          sections: sections,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
