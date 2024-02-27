@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'MyAccountScreen.dart';
 
 class DashboardScreen extends StatelessWidget {
   @override
@@ -27,7 +28,6 @@ class DashboardScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.search, color: Color(0xffffffff), size: 22),
             onPressed: () {
-              // Add your search functionality here
             },
           ),
           Padding(
@@ -35,7 +35,10 @@ class DashboardScreen extends StatelessWidget {
             child: IconButton(
               icon: Icon(Icons.dashboard, color: Color(0xffffffff), size: 22),
               onPressed: () {
-                // Add your dashboard functionality here
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyAccountScreen()),
+                );
               },
             ),
           ),
