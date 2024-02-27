@@ -79,7 +79,7 @@ class RegisterScreen extends StatelessWidget {
                         borderSide:
                             BorderSide(color: Color(0xff9e9e9e), width: 1),
                       ),
-                      labelText: "Name",
+                      labelText: "First Name",
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.normal,
@@ -91,6 +91,50 @@ class RegisterScreen extends StatelessWidget {
                       isDense: false,
                       contentPadding:
                           EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                  child: TextField(
+                    controller: TextEditingController(text: ""),
+                    obscureText: false,
+                    textAlign: TextAlign.start,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 16,
+                      color: Color(0xff000000),
+                    ),
+                    decoration: InputDecoration(
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide:
+                        BorderSide(color: Color(0xff9e9e9e), width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide:
+                        BorderSide(color: Color(0xff9e9e9e), width: 1),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide:
+                        BorderSide(color: Color(0xff9e9e9e), width: 1),
+                      ),
+                      labelText: "Last Name",
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16,
+                        color: Color(0xff9e9e9e),
+                      ),
+                      filled: true,
+                      fillColor: Color(0x00ffffff),
+                      isDense: false,
+                      contentPadding:
+                      EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     ),
                   ),
                 ),
