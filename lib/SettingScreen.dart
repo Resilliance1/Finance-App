@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ChangePasswordScreen.dart';
 
 class SettingScreen extends StatelessWidget {
   @override
@@ -136,45 +137,56 @@ class SettingScreen extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    "Change Password",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 16,
-                      color: Color(0xff000000),
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to ChangePasswordScreen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChangePasswordScreen(),
+                  ),
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      "Change Password",
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16,
+                        color: Color(0xff000000),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                  child: Text(
-                    "********",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 12,
-                      color: Color(0xff9e9e9e),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                    child: Text(
+                      "********",
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                        fontSize: 12,
+                        color: Color(0xff9e9e9e),
+                      ),
                     ),
                   ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color(0xff000000),
-                  size: 18,
-                ),
-              ],
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Color(0xff000000),
+                    size: 18,
+                  ),
+                ],
+              ),
             ),
           ),
           Divider(

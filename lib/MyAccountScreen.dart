@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'SettingScreen.dart';
 
 class MyAccountScreen extends StatelessWidget {
   @override
@@ -118,6 +119,12 @@ class MyAccountScreen extends StatelessWidget {
                   ),
                   trailing: Icon(Icons.arrow_forward_ios,
                       color: Color(0xff000000), size: 18),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingScreen()),
+                    );
+                  },
                 ),
                 Divider(
                   color: Color(0x4d9e9e9e),
@@ -158,7 +165,7 @@ class MyAccountScreen extends StatelessWidget {
                 ListTile(
                   tileColor: Color(0xffffffff),
                   title: Text(
-                    "Tems and Conditions",
+                    "Terms and Conditions",
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,

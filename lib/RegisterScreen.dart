@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'firebase.dart';
 
 class RegisterScreen extends StatelessWidget {
   @override
@@ -278,7 +279,8 @@ class RegisterScreen extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: MaterialButton(
-                        onPressed: () {},
+                        onPressed: () {
+                        },
                         color: Color(0xff3a57e8),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
