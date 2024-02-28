@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 import 'firebase.dart';
 
 class RegisterScreen extends StatelessWidget {
+  final TextEditingController accountIdController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController fnameController = TextEditingController();
+  final TextEditingController lnameController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController currencyController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -280,6 +289,15 @@ class RegisterScreen extends StatelessWidget {
                       flex: 1,
                       child: MaterialButton(
                         onPressed: () {
+                          String accountId = accountIdController.text;
+                          String email = emailController.text;
+                          String password = passwordController.text;
+                          String fname = fnameController.text;
+                          String lname = lnameController.text;
+                          String amount = amountController.text;
+                          String currency = currencyController.text;
+
+                          updateDatabase(accountId, email, password, fname, lname, amount, currency);
                         },
                         color: Color(0xff3a57e8),
                         elevation: 0,
