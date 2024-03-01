@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'SettingScreen.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
   @override
@@ -22,10 +23,18 @@ class ChangePasswordScreen extends StatelessWidget {
             color: Color(0xffffffff),
           ),
         ),
-        leading: Icon(
-          Icons.arrow_back_ios,
-          color: Color(0xffffffff),
-          size: 22,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xffffffff),
+            size: 22,
+          ),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingScreen())
+            );
+          },
         ),
       ),
       body: Padding(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ChangePasswordScreen.dart';
+import 'MyAccountScreen.dart';
 
 class SettingScreen extends StatelessWidget {
   @override
@@ -23,10 +24,18 @@ class SettingScreen extends StatelessWidget {
             color: Color(0xffffffff),
           ),
         ),
-        leading: Icon(
-          Icons.arrow_back_ios,
-          color: Color(0xffffffff),
-          size: 22,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xffffffff),
+            size: 22,
+          ),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyAccountScreen())
+            );
+          },
         ),
       ),
       body: ListView(
@@ -35,49 +44,30 @@ class SettingScreen extends StatelessWidget {
         shrinkWrap: false,
         physics: ScrollPhysics(),
         children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    "Avatar",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 16,
-                      color: Color(0xff000000),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                  child: Container(
-                    height: 30,
-                    width: 30,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: Image.network(
-                        "https://image.freepik.com/free-photo/pleasant-looking-serious-man-stands-profile-has-confident-expression-wears-casual-white-t-shirt_273609-16959.jpg",
-                        fit: BoxFit.cover),
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color(0xff000000),
-                  size: 18,
-                ),
-              ],
-            ),
-          ),
+                ListTile(
+                tileColor: Color(0xffffffff),
+      title: Text(
+        "Name",
+        style: TextStyle(
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+          fontSize: 16,
+          color: Color(0xff000000),
+        ),
+        textAlign: TextAlign.start,
+      ),
+      dense: true,
+      contentPadding: EdgeInsets.all(0),
+      selected: false,
+      selectedTileColor: Color(0x42000000),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.zero,
+      ),
+
+      trailing: Icon(Icons.arrow_forward_ios,
+          color: Color(0xff000000), size: 18),
+      onTap: () {},
+    ),
           Divider(
             color: Color(0x4d9e9e9e),
             height: 16,
@@ -85,109 +75,34 @@ class SettingScreen extends StatelessWidget {
             indent: 0,
             endIndent: 0,
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    "Name",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 16,
-                      color: Color(0xff000000),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                  child: Text(
-                    "Philip Ramirez",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 12,
-                      color: Color(0xff9e9e9e),
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color(0xff000000),
-                  size: 18,
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            color: Color(0x4d9e9e9e),
-            height: 16,
-            thickness: 1,
-            indent: 0,
-            endIndent: 0,
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-            child: GestureDetector(
-              onTap: () {
-                // Navigate to ChangePasswordScreen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChangePasswordScreen(),
-                  ),
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      "Change Password",
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 16,
-                        color: Color(0xff000000),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                    child: Text(
-                      "********",
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 12,
-                        color: Color(0xff9e9e9e),
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: Color(0xff000000),
-                    size: 18,
-                  ),
-                ],
+          ListTile(
+            tileColor: Color(0xffffffff),
+            title: Text(
+              "Change Password",
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                fontSize: 16,
+                color: Color(0xff000000),
               ),
+              textAlign: TextAlign.start,
             ),
+            dense: true,
+            contentPadding: EdgeInsets.all(0),
+            selected: false,
+            selectedTileColor: Color(0x42000000),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+            ),
+
+            trailing: Icon(Icons.arrow_forward_ios,
+                color: Color(0xff000000), size: 18),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChangePasswordScreen()),
+              );
+            },
           ),
           Divider(
             color: Color(0x4d9e9e9e),
@@ -196,49 +111,31 @@ class SettingScreen extends StatelessWidget {
             indent: 0,
             endIndent: 0,
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    "Email",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 16,
-                      color: Color(0xff000000),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                  child: Text(
-                    "philipramirez@gmail.com",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 12,
-                      color: Color(0xff9e9e9e),
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color(0xff000000),
-                  size: 18,
-                ),
-              ],
+          ListTile(
+            tileColor: Color(0xffffffff),
+            title: Text(
+              "Change Email",
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                fontSize: 16,
+                color: Color(0xff000000),
+              ),
+              textAlign: TextAlign.start,
             ),
-          ),
+            dense: true,
+            contentPadding: EdgeInsets.all(0),
+            selected: false,
+            selectedTileColor: Color(0x42000000),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+            ),
+
+            trailing: Icon(Icons.arrow_forward_ios,
+                color: Color(0xff000000), size: 18),
+            onTap: () {
+            },
+          )
         ],
       ),
     );

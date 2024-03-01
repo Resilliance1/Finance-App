@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'SettingScreen.dart';
-
+import 'DashboardScreen.dart';
 class MyAccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -22,6 +22,19 @@ class MyAccountScreen extends StatelessWidget {
             fontSize: 20,
             color: Color(0xffffffff),
           ),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xffffffff),
+            size: 22,
+          ),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DashboardScreen())
+            );
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -136,7 +149,7 @@ class MyAccountScreen extends StatelessWidget {
                 ListTile(
                   tileColor: Color(0xffffffff),
                   title: Text(
-                    "About us",
+                    "About Us",
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
@@ -154,6 +167,7 @@ class MyAccountScreen extends StatelessWidget {
                   ),
                   trailing: Icon(Icons.arrow_forward_ios,
                       color: Color(0xff000000), size: 18),
+                  onTap: () {},
                 ),
                 Divider(
                   color: Color(0x4d9e9e9e),
@@ -183,6 +197,7 @@ class MyAccountScreen extends StatelessWidget {
                   ),
                   trailing: Icon(Icons.arrow_forward_ios,
                       color: Color(0xff000000), size: 18),
+                  onTap: () {},
                 ),
               ],
             ),
