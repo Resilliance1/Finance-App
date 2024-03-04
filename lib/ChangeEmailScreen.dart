@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'SettingScreen.dart';
 
-class ChangePasswordScreen extends StatelessWidget {
+class ChangeEmailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +15,7 @@ class ChangePasswordScreen extends StatelessWidget {
           borderRadius: BorderRadius.zero,
         ),
         title: Text(
-          "Change Password",
+          "Change Email",
           style: TextStyle(
             fontWeight: FontWeight.w700,
             fontStyle: FontStyle.normal,
@@ -74,14 +74,14 @@ class ChangePasswordScreen extends StatelessWidget {
                       borderSide:
                           BorderSide(color: Color(0xff9e9e9e), width: 1),
                     ),
-                    labelText: "Current Password",
+                    labelText: "Current Email",
                     labelStyle: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
                       fontSize: 16,
                       color: Color(0xff9e9e9e),
                     ),
-                    hintText: "Enter  Current Password",
+                    hintText: "Enter  Current Email",
                     hintStyle: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
@@ -125,14 +125,14 @@ class ChangePasswordScreen extends StatelessWidget {
                       borderSide:
                           BorderSide(color: Color(0xff9e9e9e), width: 1),
                     ),
-                    labelText: "New Password",
+                    labelText: "New Email",
                     labelStyle: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
                       fontSize: 16,
                       color: Color(0xff9e9e9e),
                     ),
-                    hintText: "Enter New Password",
+                    hintText: "Enter New Email",
                     hintStyle: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
@@ -176,14 +176,14 @@ class ChangePasswordScreen extends StatelessWidget {
                       borderSide:
                           BorderSide(color: Color(0xff9e9e9e), width: 1),
                     ),
-                    labelText: "Re-enter Password",
+                    labelText: "Re-enter Email",
                     labelStyle: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
                       fontSize: 16,
                       color: Color(0xff9e9e9e),
                     ),
-                    hintText: "Re-enter Password",
+                    hintText: "Re -enter Email",
                     hintStyle: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,

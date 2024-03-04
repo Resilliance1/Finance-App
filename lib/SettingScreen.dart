@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'ChangePasswordScreen.dart';
 import 'MyAccountScreen.dart';
+import 'ChangeEmailScreen.dart';
+
 
 class SettingScreen extends StatelessWidget {
   @override
@@ -44,37 +46,6 @@ class SettingScreen extends StatelessWidget {
         shrinkWrap: false,
         physics: ScrollPhysics(),
         children: [
-                ListTile(
-                tileColor: Color(0xffffffff),
-      title: Text(
-        "Name",
-        style: TextStyle(
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-          fontSize: 16,
-          color: Color(0xff000000),
-        ),
-        textAlign: TextAlign.start,
-      ),
-      dense: true,
-      contentPadding: EdgeInsets.all(0),
-      selected: false,
-      selectedTileColor: Color(0x42000000),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-      ),
-
-      trailing: Icon(Icons.arrow_forward_ios,
-          color: Color(0xff000000), size: 18),
-      onTap: () {},
-    ),
-          Divider(
-            color: Color(0x4d9e9e9e),
-            height: 16,
-            thickness: 1,
-            indent: 0,
-            endIndent: 0,
-          ),
           ListTile(
             tileColor: Color(0xffffffff),
             title: Text(
@@ -134,8 +105,43 @@ class SettingScreen extends StatelessWidget {
             trailing: Icon(Icons.arrow_forward_ios,
                 color: Color(0xff000000), size: 18),
             onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChangeEmailScreen()),
+              );
             },
-          )
+          ),
+          Divider(
+            color: Color(0x4d9e9e9e),
+            height: 16,
+            thickness: 1,
+            indent: 0,
+            endIndent: 0,
+          ),
+          ListTile(
+            tileColor: Color(0xffffffff),
+            title: Text(
+              "Delete Account",
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                fontSize: 16,
+                color: Color(0xff000000),
+              ),
+              textAlign: TextAlign.start,
+            ),
+            dense: true,
+            contentPadding: EdgeInsets.all(0),
+            selected: false,
+            selectedTileColor: Color(0x42000000),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+            ),
+
+            trailing: Icon(Icons.arrow_forward_ios,
+                color: Color(0xff000000), size: 18),
+            onTap: () {},
+          ),
         ],
       ),
     );
