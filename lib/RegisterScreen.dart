@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
-import 'firebase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'LoginScreen.dart';
 
 class RegisterScreen extends StatelessWidget {
   final TextEditingController accountIdController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confPasswordController = TextEditingController();
   final TextEditingController fnameController = TextEditingController();
   final TextEditingController lnameController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
   final TextEditingController currencyController = TextEditingController();
+  // For inputs make sure the controller of any new widget is 'emailController' for example and not just 'TextEditingController(text: '')' like it was before
 
+  Future<void> registerWithEmailAndPassword(
+      BuildContext context, String email, String password) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      Navigator.push(context,
+          new MaterialPageRoute(builder: (context) => new LoginScreen()));
+      // successful signup redirects to login
+    } catch (e) {
+      print("Login Error: $e");
+      // registration error printed in console only atm for devs
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +53,7 @@ class RegisterScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 8, 0, 30),
                   child: Text(
-                    "Resilliance",
+                    "Resilience",
                     textAlign: TextAlign.start,
                     overflow: TextOverflow.clip,
                     style: TextStyle(
@@ -63,7 +81,8 @@ class RegisterScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
                   child: TextField(
-                    controller: TextEditingController(text: ""),
+                    controller:
+                        fnameController, // fnameController here is making the input to the textbox save as firstname
                     obscureText: false,
                     textAlign: TextAlign.start,
                     maxLines: 1,
@@ -107,7 +126,7 @@ class RegisterScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
                   child: TextField(
-                    controller: TextEditingController(text: ""),
+                    controller: lnameController, // Set the controller
                     obscureText: false,
                     textAlign: TextAlign.start,
                     maxLines: 1,
@@ -121,17 +140,17 @@ class RegisterScreen extends StatelessWidget {
                       disabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4.0),
                         borderSide:
-                        BorderSide(color: Color(0xff9e9e9e), width: 1),
+                            BorderSide(color: Color(0xff9e9e9e), width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4.0),
                         borderSide:
-                        BorderSide(color: Color(0xff9e9e9e), width: 1),
+                            BorderSide(color: Color(0xff9e9e9e), width: 1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4.0),
                         borderSide:
-                        BorderSide(color: Color(0xff9e9e9e), width: 1),
+                            BorderSide(color: Color(0xff9e9e9e), width: 1),
                       ),
                       labelText: "Last Name",
                       labelStyle: TextStyle(
@@ -144,14 +163,14 @@ class RegisterScreen extends StatelessWidget {
                       fillColor: Color(0x00ffffff),
                       isDense: false,
                       contentPadding:
-                      EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     ),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
                   child: TextField(
-                    controller: TextEditingController(text: ""),
+                    controller: emailController,
                     obscureText: false,
                     textAlign: TextAlign.start,
                     maxLines: 1,
@@ -195,7 +214,7 @@ class RegisterScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
                   child: TextField(
-                    controller: TextEditingController(text: ""),
+                    controller: passwordController,
                     obscureText: true,
                     textAlign: TextAlign.start,
                     maxLines: 1,
@@ -237,9 +256,9 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 16, 0, 30),
+                  padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
                   child: TextField(
-                    controller: TextEditingController(text: ""),
+                    controller: confPasswordController,
                     obscureText: true,
                     textAlign: TextAlign.start,
                     maxLines: 1,
@@ -280,6 +299,50 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 16, 0, 30),
+                  child: TextField(
+                    controller: amountController,
+                    obscureText: true,
+                    textAlign: TextAlign.start,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 16,
+                      color: Color(0xff000000),
+                    ),
+                    decoration: InputDecoration(
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide:
+                            BorderSide(color: Color(0xff9e9e9e), width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide:
+                            BorderSide(color: Color(0xff9e9e9e), width: 1),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide:
+                            BorderSide(color: Color(0xff9e9e9e), width: 1),
+                      ),
+                      labelText: "Your budget",
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16,
+                        color: Color(0xff9e9e9e),
+                      ),
+                      filled: true,
+                      fillColor: Color(0x00ffffff),
+                      isDense: false,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    ),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -289,15 +352,14 @@ class RegisterScreen extends StatelessWidget {
                       flex: 1,
                       child: MaterialButton(
                         onPressed: () {
-                          String accountId = accountIdController.text;
-                          String email = emailController.text;
-                          String password = passwordController.text;
-                          String fname = fnameController.text;
-                          String lname = lnameController.text;
-                          String amount = amountController.text;
-                          String currency = currencyController.text;
-
-                          updateDatabase(accountId, email, password, fname, lname, amount, currency);
+                          if (passwordController.text ==
+                              confPasswordController
+                                  .text) // simple password check but no error message or input checking yet
+                            registerWithEmailAndPassword(
+                                context,
+                                emailController.text,
+                                passwordController
+                                    .text); // calls register function using data from controllers on 'sign up' button press
                         },
                         color: Color(0xff3a57e8),
                         elevation: 0,

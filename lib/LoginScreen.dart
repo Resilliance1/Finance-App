@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 import 'RegisterScreen.dart';
 import 'DashboardScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  // For inputs make sure the controller of any new widget is 'emailController' for example and not just 'TextEditingController(text: '')' like it was before
+
+  Future<void> signInWithEmailAndPassword(
+      BuildContext context, String email, String password) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      Navigator.push(context,
+          new MaterialPageRoute(builder: (context) => new DashboardScreen()));
+      // successful login redirects to dashboard screen
+    } catch (e) {
+      print("Login Error: $e");
+      // login error printed in console for devs
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +48,7 @@ class LoginScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 8, 0, 30),
                   child: Text(
-                    "Resilliance",
+                    "Resilience",
                     textAlign: TextAlign.start,
                     overflow: TextOverflow.clip,
                     style: TextStyle(
@@ -55,7 +76,7 @@ class LoginScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                   child: TextField(
-                    controller: TextEditingController(text: ""),
+                    controller: emailController,
                     obscureText: false,
                     textAlign: TextAlign.start,
                     maxLines: 1,
@@ -97,7 +118,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 TextField(
-                  controller: TextEditingController(text: ""),
+                  controller: passwordController,
                   obscureText: true,
                   textAlign: TextAlign.start,
                   maxLines: 1,
@@ -167,7 +188,8 @@ class LoginScreen extends StatelessWidget {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => RegisterScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => RegisterScreen()),
                             );
                           },
                           color: Color(0xffffffff),
@@ -198,10 +220,8 @@ class LoginScreen extends StatelessWidget {
                         flex: 1,
                         child: MaterialButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => DashboardScreen()),
-                            );
+                            signInWithEmailAndPassword(context,
+                                emailController.text, passwordController.text);
                           },
                           color: Color(0xff3a57e8),
                           elevation: 0,

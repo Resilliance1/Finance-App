@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'SettingScreen.dart';
 import 'DashboardScreen.dart';
+
 class MyAccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -30,10 +31,8 @@ class MyAccountScreen extends StatelessWidget {
             size: 22,
           ),
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DashboardScreen())
-            );
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => DashboardScreen()));
           },
         ),
       ),
@@ -149,7 +148,7 @@ class MyAccountScreen extends StatelessWidget {
                 ListTile(
                   tileColor: Color(0xffffffff),
                   title: Text(
-                    "About Us",
+                    "Documentation and Help",
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
