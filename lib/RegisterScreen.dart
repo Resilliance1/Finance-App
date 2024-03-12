@@ -352,6 +352,40 @@ class RegisterScreen extends StatelessWidget {
                       flex: 1,
                       child: MaterialButton(
                         onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()),
+                          );
+                        },
+                        color: Color(0xffffffff),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          side:
+                          BorderSide(color: Color(0xff9e9e9e), width: 1),
+                        ),
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          "Back",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                          ),
+                        ),
+                        textColor: Color(0xff000000),
+                        height: 40,
+                        minWidth: 140,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: MaterialButton(
+                        onPressed: () {
                           if (passwordController.text ==
                               confPasswordController
                                   .text) // simple password check but no error message or input checking yet
@@ -379,9 +413,6 @@ class RegisterScreen extends StatelessWidget {
                         height: 40,
                         minWidth: 140,
                       ),
-                    ),
-                    SizedBox(
-                      width: 16,
                     ),
                   ],
                 ),
