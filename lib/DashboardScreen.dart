@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'MyAccountScreen.dart';
+import 'manageTransactionScreen.dart';
 import 'transaction.dart';
 import 'dart:math';
 
@@ -17,19 +18,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    updateTransactions();
+    transactions = getTransactions(); // Remove the re-declaration
+    updateData(transactions);
   }
 
-  Future<void> updateTransactions() async {
-    List<Transaction> updatedTransactions = generateRandomTransactions();
+  Future<void> updateData(List<Transaction> updatedTransactions) async {
+
+    double totalValue = updatedTransactions.fold(0.0, (sum, transaction) => sum + transaction.getValue());
+
+    List<PieChartSectionData> updatedSections = updatedTransactions.map((transaction) {
+      double percentage = (transaction.getValue() / totalValue) * 100;
+      return PieChartSectionData(
+        color: generateRandomColor(),
+        value: percentage,
+        title: transaction.getCategory(),
+        radius: 175,
+      );
+    }).toList();
+
+    List<FlSpot> updatedLineChartData = convertTransactionsToLineChartData(updatedTransactions);
+
     setState(() {
       transactions = updatedTransactions;
-      sections = convertTransactionsToPieData(transactions);
-      lineChartData = convertTransactionsToLineChartData(transactions);
+      sections = updatedSections;
+      lineChartData = updatedLineChartData;
     });
   }
-
-  List<Transaction> generateRandomTransactions() {
+// Todo use firestore or something to store and retrieve transactions
+  List<Transaction> getTransactions() {
     Random random = Random();
     List<Transaction> randomTransactions = [];
 
@@ -38,11 +54,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       String description = "Description$i";
       double value = random.nextDouble() * 100.0;
       DateTime time = DateTime.now().subtract(Duration(days: i));
-
-      Transaction transaction = Transaction(group, description, value, time);
+      String uid = 'xxasdoajdosd';
+      Transaction transaction = Transaction(group, description, value, time,uid);
       randomTransactions.add(transaction);
     }
-
     return randomTransactions;
   }
 
@@ -87,8 +102,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return min + Random().nextInt(max - min);
   }
 
-  // Sample line chart data
+  void _editTransactionsList(List<Transaction> transactions) async {
+    final updatedTransactionList = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TransactionListWidget(transactions: transactions),
+      ),
+    );
 
+    if (updatedTransactionList != null) {
+      setState(() {
+        transactions = updatedTransactionList;
+      });
+      updateData(transactions);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +271,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          updateTransactions();
+          _editTransactionsList(transactions);
         },
         backgroundColor: Color(0xff3a57e8),
         child: Icon(Icons.add),

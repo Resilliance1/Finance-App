@@ -3,15 +3,16 @@ class Transaction {
   String description;
   double value;
   DateTime time;
+  String uid;
 
-  Transaction(this.category, this.description, this.value, this.time);
+  Transaction(this.category, this.description, this.value, this.time,this.uid);
 
   String getCategory() {
     return category;
   }
 
-  void setCategory(String newGroup) {
-    category = newGroup;
+  void setCategory(String newCategory) {
+    category = newCategory;
   }
 
   String getDescription() {
@@ -21,6 +22,15 @@ class Transaction {
   void setDescription(String newDescription) {
     description = newDescription;
   }
+
+  String getUid() {
+    return uid;
+  }
+
+  void setUid(String newUid) {
+    uid = newUid;
+  }
+
 
   double getValue() {
     return value;
