@@ -1,46 +1,125 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'MyAccountScreen.dart';
+import 'manageTransactionScreen.dart';
+import 'transaction.dart';
+import 'dart:math';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
+  @override
+  _DashboardScreenState createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  List<Transaction> transactions = [];
+  List<PieChartSectionData> sections = [];
+  List<FlSpot> lineChartData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    transactions = getTransactions(); // Remove the re-declaration
+    updateData(transactions);
+  }
+
+  Future<void> updateData(List<Transaction> updatedTransactions) async {
+
+    double totalValue = updatedTransactions.fold(0.0, (sum, transaction) => sum + transaction.getValue());
+
+    List<PieChartSectionData> updatedSections = updatedTransactions.map((transaction) {
+      double percentage = (transaction.getValue() / totalValue) * 100;
+      return PieChartSectionData(
+        color: generateRandomColor(),
+        value: percentage,
+        title: transaction.getCategory(),
+        radius: 175,
+      );
+    }).toList();
+
+    List<FlSpot> updatedLineChartData = convertTransactionsToLineChartData(updatedTransactions);
+
+    setState(() {
+      transactions = updatedTransactions;
+      sections = updatedSections;
+      lineChartData = updatedLineChartData;
+    });
+  }
+// Todo use firestore or something to store and retrieve transactions
+  List<Transaction> getTransactions() {
+    Random random = Random();
+    List<Transaction> randomTransactions = [];
+
+    for (int i = 0; i < 5; i++) {
+      String group = "Group$i";
+      String description = "Description$i";
+      double value = random.nextDouble() * 100.0;
+      DateTime time = DateTime.now().subtract(Duration(days: i));
+      String uid = 'xxasdoajdosd';
+      Transaction transaction = Transaction(group, description, value, time,uid);
+      randomTransactions.add(transaction);
+    }
+    return randomTransactions;
+  }
+
+  List<PieChartSectionData> convertTransactionsToPieData(List<Transaction> transactions) {
+    double totalValue = transactions.fold(0.0, (sum, transaction) => sum + transaction.getValue());
+
+    List<PieChartSectionData> pieChartSections = transactions.map((transaction) {
+      double percentage = (transaction.getValue() / totalValue) * 100;
+      return PieChartSectionData(
+        color: generateRandomColor(),
+        value: percentage,
+        title: transaction.getCategory(),
+        radius: 175,
+      );
+    }).toList();
+
+    return pieChartSections;
+  }
+
+  List<FlSpot> convertTransactionsToLineChartData(List<Transaction> transactions) {
+    List<FlSpot> lineChartData = [];
+
+    for (int i = 0; i < transactions.length; i++) {
+      // Use the transaction's time as the x-coordinate
+      // and the value as the y-coordinate
+      lineChartData.add(FlSpot(transactions[i].getTime().millisecondsSinceEpoch.toDouble(), transactions[i].getValue()));
+    }
+
+    return lineChartData;
+  }
+
+  Color generateRandomColor() {
+    return Color.fromRGBO(
+      _generateRandomInt(0, 255),
+      _generateRandomInt(0, 255),
+      _generateRandomInt(0, 255),
+      1,
+    );
+  }
+
+  int _generateRandomInt(int min, int max) {
+    return min + Random().nextInt(max - min);
+  }
+
+  void _editTransactionsList(List<Transaction> transactions) async {
+    final updatedTransactionList = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TransactionListWidget(transactions: transactions),
+      ),
+    );
+
+    if (updatedTransactionList != null) {
+      setState(() {
+        transactions = updatedTransactionList;
+      });
+      updateData(transactions);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<PieChartSectionData> sections = [
-      PieChartSectionData(
-        color: Colors.blue,
-        value: 40, // Sample value
-        title: 'Food', // Sample label
-        radius: 175,
-      ),
-      PieChartSectionData(
-        color: Colors.green,
-        value: 30, // Sample value
-        title: 'Transport', // Sample label
-        radius: 175,
-      ),
-      PieChartSectionData(
-        color: Colors.red,
-        value: 20, // Sample value
-        title: 'Housing', // Sample label
-        radius: 175,
-      ),
-      PieChartSectionData(
-        color: Colors.orange,
-        value: 10, // Sample value
-        title: 'Entertainment', // Sample label
-        radius: 175,
-      ),
-    ];
-
-    // Sample line chart data
-    List<FlSpot> lineChartData = [
-      FlSpot(0, 10),
-      FlSpot(1, 15),
-      FlSpot(2, 12),
-      FlSpot(3, 14),
-      FlSpot(4, 10),
-    ];
-
     return Scaffold(
       backgroundColor: Color(0xffffffff),
       appBar: AppBar(
@@ -63,8 +142,7 @@ class DashboardScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.search, color: Color(0xffffffff), size: 22),
-            onPressed: () {
-            },
+            onPressed: () {},
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(8, 0, 16, 0),
@@ -193,7 +271,7 @@ class DashboardScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add functionality for floating action button here
+          _editTransactionsList(transactions);
         },
         backgroundColor: Color(0xff3a57e8),
         child: Icon(Icons.add),
