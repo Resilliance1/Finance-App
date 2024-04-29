@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'LoginScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterScreen extends StatelessWidget {
   final TextEditingController accountIdController = TextEditingController();
@@ -13,13 +14,24 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController currencyController = TextEditingController();
   // For inputs make sure the controller of any new widget is 'emailController' for example and not just 'TextEditingController(text: '')' like it was before
 
-  Future<void> registerWithEmailAndPassword(
-      BuildContext context, String email, String password) async {
+  Future<void> registerWithEmailAndPassword(BuildContext context, String email,
+      String password, String fname, String lname, String budget) async {
+    final data = {
+      "Budget": budget,
+      "email": email,
+      "fname": fname,
+      "lname": lname,
+      "password": password
+    };
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      FirebaseFirestore.instance.collection("Users").add(data).then(
+          // From this line
+          (documentSnapshot) => print(
+              "Added Data with ID: ${documentSnapshot.id}")); // to this line is how you write to firestore. 'data' is created above using what you pass to the function.
+      ;
+
       Navigator.push(context,
           new MaterialPageRoute(builder: (context) => new LoginScreen()));
       // successful signup redirects to login
@@ -358,7 +370,10 @@ class RegisterScreen extends StatelessWidget {
                             registerWithEmailAndPassword(
                                 context,
                                 emailController.text,
-                                passwordController
+                                passwordController.text,
+                                fnameController.text,
+                                lnameController.text,
+                                amountController
                                     .text); // calls register function using data from controllers on 'sign up' button press
                         },
                         color: Color(0xff3a57e8),
