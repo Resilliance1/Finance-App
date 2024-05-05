@@ -25,8 +25,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    transactions = getTransactions(); // Remove the re-declaration
-    updateData(transactions);
+    _loadTransactions();
+  }
+  Future<void> _loadTransactions() async {
+    List<MyTransaction> loadedTransactions = await getTransactionsFromFirestore();
+    updateData(loadedTransactions);
   }
 
   Future<void> updateData(List<MyTransaction> updatedTransactions) async {
@@ -52,21 +55,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 // Todo use firestore or something to store and retrieve transactions
-  List<MyTransaction> getTransactions() {
-    CollectionReference dbTransactions = FirebaseFirestore.instance.collection('Transactions');
-    Random random = Random();
-    List<MyTransaction> randomTransactions = [];
-
-    for (int i = 0; i < 5; i++) {
-      String group = "Group$i";
-      String description = "Description$i";
-      double value = random.nextDouble() * 100.0;
-      DateTime time = DateTime.now().subtract(Duration(days: i));
-      String uid = 'xxasdoajdosd';
-      MyTransaction transaction = MyTransaction(category:group, description:description, value:value,time:time,uid:uid);
-      randomTransactions.add(transaction);
+  Future<List<MyTransaction>> getTransactionsFromFirestore() async {
+    try {
+      CollectionReference transactionsRef =
+      FirebaseFirestore.instance.collection('Transactions');
+      QuerySnapshot querySnapshot = await transactionsRef
+          .where('uid', isEqualTo: email)
+          .get();
+      List<MyTransaction> transactions = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return MyTransaction.fromMap(data);
+      }).toList();
+      return transactions;
+    } catch (e) {
+      print("Error getting transactions: $e");
+      return [];
     }
-    return randomTransactions;
   }
 
   List<PieChartSectionData> convertTransactionsToPieData(List<MyTransaction> transactions) {
