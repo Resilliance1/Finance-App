@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'transaction.dart';
 
 class TransactionListWidget extends StatefulWidget {
-  final List<Transaction> transactions;
+  final List<MyTransaction> transactions;
 
   TransactionListWidget({required this.transactions});
 
@@ -81,7 +81,7 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {
 }
 
 class EditTransactionScreen extends StatefulWidget {
-  final Transaction transaction;
+  final MyTransaction transaction;
 
   EditTransactionScreen({required this.transaction});
 
@@ -174,12 +174,12 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     double updatedValue = double.tryParse(_valueController.text) ?? 0.0;
 
     // Create a new transaction object with updated values
-    Transaction updatedTransaction = Transaction(
-      updatedCategory,
-      updatedDescription,
-      updatedValue,
-      _selectedDate, // Use the selected date
-      widget.transaction.uid,
+    MyTransaction updatedTransaction = MyTransaction(
+      category:updatedCategory,
+      description:updatedDescription,
+      value:updatedValue,
+      time:_selectedDate, // Use the selected time
+      uid:widget.transaction.uid,
     );
 
     // Pass the updated transaction back to the previous screen

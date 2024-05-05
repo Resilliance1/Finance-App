@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'LoginScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'transaction.dart';
 
 class RegisterScreen extends StatelessWidget {
   final TextEditingController accountIdController = TextEditingController();
@@ -31,7 +32,12 @@ class RegisterScreen extends StatelessWidget {
           (documentSnapshot) => print(
               "Added Data with ID: ${documentSnapshot.id}")); // to this line is how you write to firestore. 'data' is created above using what you pass to the function.
       ;
-
+      MyTransaction firstTransaction = MyTransaction(category:'First', description:'Starting budget', value:double.parse(budget), time: DateTime.utc(1989, 11, 9), uid:email);
+      FirebaseFirestore.instance.collection("Transactions").add(firstTransaction.toMap()).then(
+        // From this line
+              (documentSnapshot) => print(
+              "Added Data with ID: ${documentSnapshot.id}")); // to this line is how you write to firestore. 'data' is created above using what you pass to the function.
+          ;
       Navigator.push(context,
           new MaterialPageRoute(builder: (context) => new LoginScreen()));
       // successful signup redirects to login

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'SettingScreen.dart';
 
 class ChangeEmailScreen extends StatelessWidget {
+  final String email;
+
+  ChangeEmailScreen({required this.email});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +35,7 @@ class ChangeEmailScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingScreen())
+                MaterialPageRoute(builder: (context) => SettingScreen(email:email))
             );
           },
         ),

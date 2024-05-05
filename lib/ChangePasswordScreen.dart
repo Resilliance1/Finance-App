@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'SettingScreen.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
+  final String email;
+
+  ChangePasswordScreen({required this.email});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +35,7 @@ class ChangePasswordScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingScreen())
+                MaterialPageRoute(builder: (context) => SettingScreen(email:email))
             );
           },
         ),

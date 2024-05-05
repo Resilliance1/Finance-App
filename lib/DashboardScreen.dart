@@ -4,14 +4,21 @@ import 'MyAccountScreen.dart';
 import 'manageTransactionScreen.dart';
 import 'transaction.dart';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DashboardScreen extends StatefulWidget {
+  final String email;
+
+  DashboardScreen({required this.email});
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  _DashboardScreenState createState() => _DashboardScreenState(email:email);
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  List<Transaction> transactions = [];
+  final String email;
+
+  _DashboardScreenState({required this.email});
+  List<MyTransaction> transactions = [];
   List<PieChartSectionData> sections = [];
   List<FlSpot> lineChartData = [];
 
@@ -22,7 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     updateData(transactions);
   }
 
-  Future<void> updateData(List<Transaction> updatedTransactions) async {
+  Future<void> updateData(List<MyTransaction> updatedTransactions) async {
 
     double totalValue = updatedTransactions.fold(0.0, (sum, transaction) => sum + transaction.getValue());
 
@@ -45,9 +52,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 // Todo use firestore or something to store and retrieve transactions
-  List<Transaction> getTransactions() {
+  List<MyTransaction> getTransactions() {
+    CollectionReference dbTransactions = FirebaseFirestore.instance.collection('Transactions');
     Random random = Random();
-    List<Transaction> randomTransactions = [];
+    List<MyTransaction> randomTransactions = [];
 
     for (int i = 0; i < 5; i++) {
       String group = "Group$i";
@@ -55,13 +63,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       double value = random.nextDouble() * 100.0;
       DateTime time = DateTime.now().subtract(Duration(days: i));
       String uid = 'xxasdoajdosd';
-      Transaction transaction = Transaction(group, description, value, time,uid);
+      MyTransaction transaction = MyTransaction(category:group, description:description, value:value,time:time,uid:uid);
       randomTransactions.add(transaction);
     }
     return randomTransactions;
   }
 
-  List<PieChartSectionData> convertTransactionsToPieData(List<Transaction> transactions) {
+  List<PieChartSectionData> convertTransactionsToPieData(List<MyTransaction> transactions) {
     double totalValue = transactions.fold(0.0, (sum, transaction) => sum + transaction.getValue());
 
     List<PieChartSectionData> pieChartSections = transactions.map((transaction) {
@@ -77,7 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return pieChartSections;
   }
 
-  List<FlSpot> convertTransactionsToLineChartData(List<Transaction> transactions) {
+  List<FlSpot> convertTransactionsToLineChartData(List<MyTransaction> transactions) {
     List<FlSpot> lineChartData = [];
 
     for (int i = 0; i < transactions.length; i++) {
@@ -102,7 +110,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return min + Random().nextInt(max - min);
   }
 
-  void _editTransactionsList(List<Transaction> transactions) async {
+  void _editTransactionsList(List<MyTransaction> transactions) async {
     final updatedTransactionList = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -151,7 +159,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MyAccountScreen()),
+                  MaterialPageRoute(builder: (context) => MyAccountScreen(email:email)),
                 );
               },
             ),

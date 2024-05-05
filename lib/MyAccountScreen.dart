@@ -3,6 +3,9 @@ import 'SettingScreen.dart';
 import 'DashboardScreen.dart';
 
 class MyAccountScreen extends StatelessWidget {
+  final String email;
+
+  MyAccountScreen({required this.email});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +35,7 @@ class MyAccountScreen extends StatelessWidget {
           ),
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => DashboardScreen()));
+                MaterialPageRoute(builder: (context) => DashboardScreen(email:email)));
           },
         ),
       ),
@@ -134,7 +137,7 @@ class MyAccountScreen extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SettingScreen()),
+                      MaterialPageRoute(builder: (context) => SettingScreen(email:email)),
                     );
                   },
                 ),

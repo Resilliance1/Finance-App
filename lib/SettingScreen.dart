@@ -5,6 +5,9 @@ import 'ChangeEmailScreen.dart';
 
 
 class SettingScreen extends StatelessWidget {
+  final String email;
+
+  SettingScreen({required this.email});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +38,7 @@ class SettingScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyAccountScreen())
+                MaterialPageRoute(builder: (context) => MyAccountScreen(email:email))
             );
           },
         ),
@@ -71,7 +74,7 @@ class SettingScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ChangePasswordScreen()),
+                MaterialPageRoute(builder: (context) => ChangePasswordScreen(email:email)),
               );
             },
           ),
@@ -107,7 +110,7 @@ class SettingScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ChangeEmailScreen()),
+                MaterialPageRoute(builder: (context) => ChangeEmailScreen(email:email)),
               );
             },
           ),

@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
         password: password,
       );
       Navigator.push(context,
-          new MaterialPageRoute(builder: (context) => new DashboardScreen()));
+          MaterialPageRoute(builder: (context) => DashboardScreen(email: email)));
       // successful login redirects to dashboard screen
     } catch (e) {
       print("Login Error: $e");
