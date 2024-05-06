@@ -11,7 +11,7 @@ class DashboardScreen extends StatefulWidget {
 
   DashboardScreen({required this.email});
   @override
-  _DashboardScreenState createState() => _DashboardScreenState(email:email);
+  _DashboardScreenState createState() => _DashboardScreenState(email: email);
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
@@ -27,16 +27,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     _loadTransactions();
   }
+
+  double calculateTotalBalance(List<MyTransaction> transactions) {
+    double totalBalance = transactions.fold(
+        0.0, (sum, transaction) => sum + transaction.getValue());
+    return double.parse(totalBalance.toStringAsFixed(2));
+  }
+
   Future<void> _loadTransactions() async {
-    List<MyTransaction> loadedTransactions = await getTransactionsFromFirestore();
+    List<MyTransaction> loadedTransactions =
+        await getTransactionsFromFirestore();
     updateData(loadedTransactions);
   }
 
   Future<void> updateData(List<MyTransaction> updatedTransactions) async {
+    double totalValue = updatedTransactions.fold(
+        0.0, (sum, transaction) => sum + transaction.getValue());
 
-    double totalValue = updatedTransactions.fold(0.0, (sum, transaction) => sum + transaction.getValue());
-
-    List<PieChartSectionData> updatedSections = updatedTransactions.map((transaction) {
+    List<PieChartSectionData> updatedSections =
+        updatedTransactions.map((transaction) {
       double percentage = (transaction.getValue() / totalValue) * 100;
       return PieChartSectionData(
         color: generateRandomColor(),
@@ -46,7 +55,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
     }).toList();
 
-    List<FlSpot> updatedLineChartData = convertTransactionsToLineChartData(updatedTransactions);
+    List<FlSpot> updatedLineChartData =
+        convertTransactionsToLineChartData(updatedTransactions);
 
     setState(() {
       transactions = updatedTransactions;
@@ -54,14 +64,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       lineChartData = updatedLineChartData;
     });
   }
-// Todo use firestore or something to store and retrieve transactions
+
+  // Todo use firestore or something to store and retrieve transactions
   Future<List<MyTransaction>> getTransactionsFromFirestore() async {
     try {
       CollectionReference transactionsRef =
-      FirebaseFirestore.instance.collection('Transactions');
-      QuerySnapshot querySnapshot = await transactionsRef
-          .where('uid', isEqualTo: email)
-          .get();
+          FirebaseFirestore.instance.collection('Transactions');
+      QuerySnapshot querySnapshot =
+          await transactionsRef.where('uid', isEqualTo: email).get();
       List<MyTransaction> transactions = querySnapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return MyTransaction.fromMap(data);
@@ -73,29 +83,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  List<PieChartSectionData> convertTransactionsToPieData(List<MyTransaction> transactions) {
-    double totalValue = transactions.fold(0.0, (sum, transaction) => sum + transaction.getValue());
-
-    List<PieChartSectionData> pieChartSections = transactions.map((transaction) {
-      double percentage = (transaction.getValue() / totalValue) * 100;
-      return PieChartSectionData(
-        color: generateRandomColor(),
-        value: percentage,
-        title: transaction.getCategory(),
-        radius: 175,
-      );
-    }).toList();
-
-    return pieChartSections;
-  }
-
-  List<FlSpot> convertTransactionsToLineChartData(List<MyTransaction> transactions) {
+  List<FlSpot> convertTransactionsToLineChartData(
+      List<MyTransaction> transactions) {
     List<FlSpot> lineChartData = [];
 
     for (int i = 0; i < transactions.length; i++) {
       // Use the transaction's time as the x-coordinate
       // and the value as the y-coordinate
-      lineChartData.add(FlSpot(transactions[i].getTime().millisecondsSinceEpoch.toDouble(), transactions[i].getValue()));
+      lineChartData.add(FlSpot(
+          transactions[i].getTime().millisecondsSinceEpoch.toDouble(),
+          transactions[i].getValue()));
     }
 
     return lineChartData;
@@ -118,7 +115,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final updatedTransactionList = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TransactionListWidget(email:email),
+        builder: (context) => TransactionListWidget(email: email),
       ),
     );
 
@@ -163,7 +160,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MyAccountScreen(email:email)),
+                  MaterialPageRoute(
+                      builder: (context) => MyAccountScreen(email: email)),
                 );
               },
             ),
@@ -175,8 +173,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+            Center(
+              child: Text(
+                "Balance\n\$${calculateTotalBalance(transactions)}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
               child: Text(
                 "Account Balance Over Time",
                 style: TextStyle(
@@ -219,8 +226,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+            Center(
               child: Text(
                 "Expense Distribution",
                 style: TextStyle(
@@ -232,50 +238,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(height: 10),
             Padding(
               padding: EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      height: 500,
-                      child: ListView.builder(
-                        itemCount: sections.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final section = sections[index];
-                          return ListTile(
-                            leading: Icon(
-                              Icons.circle,
-                              color: section.color,
-                            ),
-                            title: Text(
-                              section.title,
-                              style: TextStyle(
-                                color: section.color,
-                              ),
-                            ),
-                            trailing: Text(
-                              '\$${section.value.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          );
-                        },
+              child: Column(
+                children: sections.map((section) {
+                  return ListTile(
+                    leading: Icon(
+                      Icons.circle,
+                      color: section.color,
+                    ),
+                    title: Text(
+                      section.title,
+                      style: TextStyle(
+                        color: Color(0xFF000000),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      height: 500,
-                      child: PieChart(
-                        PieChartData(
-                          sections: sections,
-                        ),
+                    trailing: Text(
+                      '\$${section.value.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ],
+                  );
+                }).toList(),
               ),
             ),
           ],
