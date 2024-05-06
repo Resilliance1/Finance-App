@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'transaction.dart';
@@ -8,10 +10,12 @@ class TransactionListWidget extends StatefulWidget {
   TransactionListWidget({required this.email});
 
   @override
-  _TransactionListWidgetState createState() => _TransactionListWidgetState();
+  _TransactionListWidgetState createState() => _TransactionListWidgetState(email:email);
 }
 
-class _TransactionListWidgetState extends State<TransactionListWidget> {
+class _TransactionListWidgetState extends State<TransactionListWidget> {  final String email;
+
+  _TransactionListWidgetState({required this.email});
   late Future<List<MyTransaction>> _transactionsFuture;
 
   @override
@@ -137,13 +141,15 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {
     final newTransaction = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddTransactionScreen(),
+        builder: (context) => AddTransactionScreen(email:email),
       ),
     );
 
     if (newTransaction != null) {
-      // Handle the new transaction returned from AddTransactionScreen
-      // You may want to add it to your list of transactions or perform any other action
+      FirebaseFirestore.instance.collection("Transactions").add(newTransaction.toMap()).then(
+        // From this line
+              (documentSnapshot) => print(
+              "Added Data with ID: ${documentSnapshot.id}"));
     }
   }
 
@@ -152,12 +158,16 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {
   }
 }
 
-class AddTransactionScreen extends StatefulWidget {
+class AddTransactionScreen extends StatefulWidget {  final String email;
+
+  AddTransactionScreen({required this.email});
   @override
-  _AddTransactionScreenState createState() => _AddTransactionScreenState();
+  _AddTransactionScreenState createState() => _AddTransactionScreenState(email:email);
 }
 
-class _AddTransactionScreenState extends State<AddTransactionScreen> {
+class _AddTransactionScreenState extends State<AddTransactionScreen> {  final String email;
+
+  _AddTransactionScreenState({required this.email});
   late TextEditingController _categoryController;
   late TextEditingController _descriptionController;
   late TextEditingController _valueController;
@@ -245,7 +255,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       description: description,
       value: value,
       time: _selectedDate,
-      uid: UniqueKey().toString(), // Generating a unique id for the transaction
+      uid: email, // User email is uid
     );
 
     // Pass the new transaction back to the previous screen

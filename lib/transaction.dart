@@ -4,6 +4,7 @@ class MyTransaction {
   double value;
   DateTime time;
   String uid;
+  late String transactionID = '';
 
   MyTransaction({
     required this.category,
@@ -11,7 +12,7 @@ class MyTransaction {
     required this.value,
     required this.time,
     required this.uid,
-  });
+  transactionID = ''});
 
   String getCategory() {
     return category;
@@ -53,6 +54,10 @@ class MyTransaction {
     time = newTime;
   }
 
+  void setTransactionID(String ID){
+    transactionID = ID;
+  }
+
   // Function to map a transaction for use in storing in db
   Map<String, dynamic> toMap() {
     return {
@@ -72,6 +77,7 @@ class MyTransaction {
       value: map['value'] != null ? map['value'].toDouble() : 0.0,
       time: DateTime.tryParse(map['time'] ?? '') ?? DateTime.now(),
       uid: map['uid'] ?? '',
+      transactionID: map['transactionID'] ?? '',
     );
   }
 }
