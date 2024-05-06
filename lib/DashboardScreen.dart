@@ -118,7 +118,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final updatedTransactionList = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TransactionListWidget(transactions: transactions),
+        builder: (context) => TransactionListWidget(email:email),
       ),
     );
 
