@@ -147,16 +147,19 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {  final 
 
     if (newTransaction != null) {
       FirebaseFirestore.instance.collection("Transactions").add(newTransaction.toMap()).then(
-        // From this line
               (documentSnapshot) => print(
               "Added Data with ID: ${documentSnapshot.id}"));
+      setState(() {
+        _transactionsFuture = getTransactionsFromFirestore();
+      });
+    }
     }
   }
 
   void _deleteTransaction(MyTransaction transaction) async {
     // Implement deletion logic here
   }
-}
+
 
 class AddTransactionScreen extends StatefulWidget {  final String email;
 
