@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -11,7 +12,7 @@ void main() async {
           appId: "1:998860827066:web:64b8fe8db8f93acecf9583",
           messagingSenderId: "998860827066",
           projectId: "resilience-finance"));
-  runApp(MyApp());
+  runApp(GetMaterialApp(home:MyApp()));
 }
 
 class MyApp extends StatelessWidget {
