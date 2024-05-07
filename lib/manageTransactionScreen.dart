@@ -118,15 +118,13 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {  final 
         children: [
           FloatingActionButton(
             onPressed: () {
-              // Define the action for the back button
               Get.offAllNamed('/dashboard', arguments: email);
             },
-            backgroundColor: Colors.grey, // Customize the color for the back button
+            backgroundColor: Colors.grey,
             child: Icon(Icons.arrow_back),
           ),
           FloatingActionButton(
             onPressed: () {
-              // Define the action for adding a transaction
               _navigateToAddTransactionScreen();
             },
             backgroundColor: Color(0xff3a57e8),

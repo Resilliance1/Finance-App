@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'StatsScreen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -30,12 +32,17 @@ void main() async {
           name: '/edit',
           page: () {
             final email = Get.arguments; // Get the email from arguments
-            return TransactionListWidget(email: email); // Pass the email to DashboardScreen
+            return TransactionListWidget(email: email); // Pass the email to transactionlistwidget - edit screen
           }),      GetPage(
           name: '/settings',
           page: () {
             final email = Get.arguments; // Get the email from arguments
-            return SettingScreen(email: email); // Pass the email to DashboardScreen
+            return SettingScreen(email: email); // Pass the email to settings screen
+          }),GetPage(
+          name: '/stats',
+          page: () {
+            final email = Get.arguments; // Get the email from arguments
+            return StatsScreen(email: email); // Pass the email to stats page
           }),
       GetPage(name: '/register', page: () => RegisterScreen()),
     ],

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'MyAccountScreen.dart';
 import 'manageTransactionScreen.dart';
 import 'transaction.dart';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String email;
@@ -48,8 +49,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return;
     }
 
-    double totalValue = updatedTransactions.fold(
-        0.0, (sum, transaction) => sum + transaction.getValue());
 
 
 
@@ -74,20 +73,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       print("Error getting transactions: $e");
       return [];
     }
-  }
-
-
-  Color generateRandomColor() {
-    return Color.fromRGBO(
-      _generateRandomInt(0, 255),
-      _generateRandomInt(0, 255),
-      _generateRandomInt(0, 255),
-      1,
-    );
-  }
-
-  int _generateRandomInt(int min, int max) {
-    return min + Random().nextInt(max - min);
   }
 
   void _editTransactionsList(List<MyTransaction> transactions) async {
@@ -121,10 +106,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         actions: [
-          // Your existing AppBar actions
           IconButton(
-            onPressed: () {_navigateSettings(email:email);
-              // Add onPressed action for the settings button here
+            onPressed: () {
+              _navigateSettings(email: email);
             },
             icon: Icon(Icons.settings),
           ),
@@ -145,6 +129,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ),
+            SizedBox(height: 20),
+            Center(
+              child: Container(
+                height: 200,
+                child: RecentListWidget(transactions: transactions),
+              ),
+            ),
             SizedBox(height: 10),
             if (transactions.isEmpty)
               Center(
@@ -159,18 +150,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _editTransactionsList(transactions);
-        },
-        backgroundColor: Color(0xff3a57e8),
-        child: Icon(Icons.add),
-
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                Get.offAllNamed('/stats', arguments: email);
+              },
+              backgroundColor: Colors.grey,
+              child: Icon(Icons.trending_up),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                _editTransactionsList(transactions);
+              },
+              backgroundColor: Color(0xff3a57e8),
+              child: Icon(Icons.add),
+            ),
+          ],
+        ),
       ),
     );
   }
+
 
   void _navigateSettings({required String email}) {
     Get.offAllNamed('/settings', arguments: email);
   }
 }
+
+class RecentListWidget extends StatelessWidget { //
+  final List<MyTransaction> transactions;
+
+  RecentListWidget({required this.transactions});
+
+  @override
+  Widget build(BuildContext context) { // order transactions put last 5 in list widget
+    // Sort transactions by time in descending order
+    transactions.sort((a, b) => b.time.compareTo(a.time));
+
+    List<MyTransaction> recentTransactions = transactions.take(5).toList();
+
+    return ListView.builder(
+      itemCount: recentTransactions.length,
+      itemBuilder: (context, index) {
+        MyTransaction transaction = recentTransactions[index];
+        return ListTile(
+          title: Text("£${transaction.value} - ${transaction.description} - ${transaction.category}")
+        );
+      },
+    );
+  }
+}
+
