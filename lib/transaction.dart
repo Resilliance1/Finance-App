@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class MyTransaction {
   String category;
   String description;
@@ -12,7 +14,21 @@ class MyTransaction {
     required this.value,
     required this.time,
     required this.uid,
-  transactionID = ''});
+  }) {
+    // Generate a random string for transactionID, "composite key", random string + user email
+    // Probably not best practice but this so it's easier to update and delete records
+    String randomString = _generateRandomString(10);
+    transactionID = '$randomString-$uid';
+  }
+
+  // Function to generate a random string of a given length
+  String _generateRandomString(int length) {
+    const characters =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    Random random = Random();
+    return String.fromCharCodes(Iterable.generate(
+        length, (_) => characters.codeUnitAt(random.nextInt(characters.length))));
+  }
 
   String getCategory() {
     return category;
@@ -66,6 +82,7 @@ class MyTransaction {
       'value': value,
       'time': time.toIso8601String(),
       'uid': uid,
+      'transactionID': transactionID,
     };
   }
 
@@ -77,8 +94,7 @@ class MyTransaction {
       value: map['value'] != null ? map['value'].toDouble() : 0.0,
       time: DateTime.tryParse(map['time'] ?? '') ?? DateTime.now(),
       uid: map['uid'] ?? '',
-      transactionID: map['transactionID'] ?? '',
-    );
+    )..transactionID = map['transactionID'] ?? '';
   }
 }
 

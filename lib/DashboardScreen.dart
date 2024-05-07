@@ -5,6 +5,7 @@ import 'manageTransactionScreen.dart';
 import 'transaction.dart';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String email;
@@ -19,8 +20,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   _DashboardScreenState({required this.email});
   List<MyTransaction> transactions = [];
-  List<PieChartSectionData> sections = [];
-  List<FlSpot> lineChartData = [];
 
   @override
   void initState() {
@@ -37,35 +36,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _loadTransactions() async {
     List<MyTransaction> loadedTransactions =
         await getTransactionsFromFirestore();
-    updateData(loadedTransactions);
+    await updateData(loadedTransactions);
   }
 
   Future<void> updateData(List<MyTransaction> updatedTransactions) async {
+    if (updatedTransactions.isEmpty) {
+      // Clear existing data if no transactions are available
+      setState(() {
+        transactions.clear();
+      });
+      return;
+    }
+
     double totalValue = updatedTransactions.fold(
         0.0, (sum, transaction) => sum + transaction.getValue());
 
-    List<PieChartSectionData> updatedSections =
-        updatedTransactions.map((transaction) {
-      double percentage = (transaction.getValue() / totalValue) * 100;
-      return PieChartSectionData(
-        color: generateRandomColor(),
-        value: percentage,
-        title: transaction.getCategory(),
-        radius: 175,
-      );
-    }).toList();
 
-    List<FlSpot> updatedLineChartData =
-        convertTransactionsToLineChartData(updatedTransactions);
 
     setState(() {
       transactions = updatedTransactions;
-      sections = updatedSections;
-      lineChartData = updatedLineChartData;
     });
   }
 
-  // Todo use firestore or something to store and retrieve transactions
+  // Todo use firestore retrieve transactions // Done
   Future<List<MyTransaction>> getTransactionsFromFirestore() async {
     try {
       CollectionReference transactionsRef =
@@ -83,20 +76,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  List<FlSpot> convertTransactionsToLineChartData(
-      List<MyTransaction> transactions) {
-    List<FlSpot> lineChartData = [];
-
-    for (int i = 0; i < transactions.length; i++) {
-      // Use the transaction's time as the x-coordinate
-      // and the value as the y-coordinate
-      lineChartData.add(FlSpot(
-          transactions[i].getTime().millisecondsSinceEpoch.toDouble(),
-          transactions[i].getValue()));
-    }
-
-    return lineChartData;
-  }
 
   Color generateRandomColor() {
     return Color.fromRGBO(
@@ -112,18 +91,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _editTransactionsList(List<MyTransaction> transactions) async {
-    final updatedTransactionList = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TransactionListWidget(email: email),
-      ),
-    );
-
+    final updatedTransactionList = await Get.offAllNamed('/edit', arguments: email);
     if (updatedTransactionList != null) {
       setState(() {
-        transactions = updatedTransactionList;
       });
-      updateData(transactions);
+      _loadTransactions();
     }
   }
 
@@ -140,7 +112,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           borderRadius: BorderRadius.zero,
         ),
         title: Text(
-          "Home",
+          "Resilience",
           style: TextStyle(
             fontWeight: FontWeight.w700,
             fontStyle: FontStyle.normal,
@@ -149,22 +121,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         actions: [
+          // Your existing AppBar actions
           IconButton(
-            icon: Icon(Icons.search, color: Color(0xffffffff), size: 22),
-            onPressed: () {},
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(8, 0, 16, 0),
-            child: IconButton(
-              icon: Icon(Icons.dashboard, color: Color(0xffffffff), size: 22),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyAccountScreen(email: email)),
-                );
-              },
-            ),
+            onPressed: () {_navigateSettings(email:email);
+              // Add onPressed action for the settings button here
+            },
+            icon: Icon(Icons.settings),
           ),
         ],
       ),
@@ -173,94 +135,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20),
-            Center(
-              child: Text(
-                "Balance\n\$${calculateTotalBalance(transactions)}",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: Text(
-                "Account Balance Over Time",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Container(
-                height: 200,
-                child: LineChart(
-                  LineChartData(
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: lineChartData,
-                        isCurved: true,
-                        colors: [Colors.blue],
-                        barWidth: 4,
-                        isStrokeCapRound: true,
-                        belowBarData: BarAreaData(show: false),
-                      ),
-                    ],
-                    titlesData: FlTitlesData(
-                      show: true,
-                      leftTitles: SideTitles(showTitles: false),
-                      bottomTitles: SideTitles(showTitles: false),
-                    ),
-                    borderData: FlBorderData(
-                      show: true,
-                      border: Border.all(
-                        color: const Color(0xff37434d),
-                        width: 1,
-                      ),
-                    ),
+            if (transactions.isNotEmpty)
+              Center(
+                child: Text(
+                  "Your Current Balance\n\£${calculateTotalBalance(transactions)}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: Text(
-                "Expense Distribution",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+            SizedBox(height: 10),
+            if (transactions.isEmpty)
+              Center(
+                child: Text(
+                  "No transactions - Press the '+' button!",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                children: sections.map((section) {
-                  return ListTile(
-                    leading: Icon(
-                      Icons.circle,
-                      color: section.color,
-                    ),
-                    title: Text(
-                      section.title,
-                      style: TextStyle(
-                        color: Color(0xFF000000),
-                      ),
-                    ),
-                    trailing: Text(
-                      '\$${section.value.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
           ],
         ),
       ),
@@ -270,7 +165,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         },
         backgroundColor: Color(0xff3a57e8),
         child: Icon(Icons.add),
+
       ),
     );
+  }
+
+  void _navigateSettings({required String email}) {
+    Get.offAllNamed('/settings', arguments: email);
   }
 }

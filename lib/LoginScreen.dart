@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'RegisterScreen.dart';
 import 'DashboardScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -15,8 +16,7 @@ class LoginScreen extends StatelessWidget {
         email: email,
         password: password,
       );
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => DashboardScreen(email: email)));
+      Get.offNamed('/dashboard', arguments: email);
       // successful login redirects to dashboard screen
     } catch (e) {
       print("Login Error: $e");

@@ -1,3 +1,4 @@
+import 'package:ResillianceFinance/DashboardScreen.dart';
 import 'package:flutter/material.dart';
 import 'ChangePasswordScreen.dart';
 import 'MyAccountScreen.dart';
@@ -38,7 +39,7 @@ class SettingScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyAccountScreen(email:email))
+                MaterialPageRoute(builder: (context) => DashboardScreen(email:email))
             );
           },
         ),

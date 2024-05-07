@@ -1,7 +1,8 @@
-import 'dart:html';
+
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'transaction.dart';
 
 class TransactionListWidget extends StatefulWidget {
@@ -46,7 +47,7 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {  final 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Transaction List'),
+        title: Text('Your Transactions'),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -81,7 +82,7 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {  final 
                                 GestureDetector(
                                   child: Text('Edit'),
                                   onTap: () {
-                                    Navigator.pop(context);
+                                    Get.back();
                                     _editTransaction(transactions[index]);
                                   },
                                 ),
@@ -89,7 +90,7 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {  final 
                                 GestureDetector(
                                   child: Text('Delete'),
                                   onTap: () {
-                                    Navigator.pop(context);
+                                    Get.back();
                                     _deleteTransaction(transactions[index]);
                                   },
                                 ),
@@ -103,7 +104,7 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {  final 
                   child: ListTile(
                     title: Text(transactions[index].description),
                     subtitle: Text(
-                        '${transactions[index].category} - \$${transactions[index].value.toStringAsFixed(2)}'),
+                        '${transactions[index].category} - \£${transactions[index].value.toStringAsFixed(2)}'),
                     trailing: Text('${transactions[index].time.toString()}'),
                   ),
                 );
@@ -112,17 +113,33 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {  final 
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _navigateToAddTransactionScreen();
-        },
-        backgroundColor: Color(0xff3a57e8),
-        child: Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              // Define the action for the back button
+              Get.offAllNamed('/dashboard', arguments: email);
+            },
+            backgroundColor: Colors.grey, // Customize the color for the back button
+            child: Icon(Icons.arrow_back),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              // Define the action for adding a transaction
+              _navigateToAddTransactionScreen();
+            },
+            backgroundColor: Color(0xff3a57e8),
+            child: Icon(Icons.add),
+          ),
+        ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
-  void _editTransaction(MyTransaction transaction) async {
+void _editTransaction(MyTransaction transaction) async {
+  try {
     final updatedTransaction = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -131,11 +148,28 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {  final 
     );
 
     if (updatedTransaction != null) {
-      setState(() {
-        // Implement logic to update transaction in Firestore here if needed
-      });
+      // Delete the existing transaction
+      _deleteTransaction(transaction);
+
+      // Add the updated transaction
+      await FirebaseFirestore.instance.collection("Transactions").add(updatedTransaction.toMap()).then(
+              (documentSnapshot) {
+            print("Added Data with ID: ${documentSnapshot.id}");
+            // Update the UI by fetching updated transactions
+            setState(() {
+              _transactionsFuture = getTransactionsFromFirestore();
+            });
+          }
+      );
+
+      print('Transaction updated successfully');
     }
+  } catch (e) {
+    print('Error navigating to edit screen or updating transaction: $e');
   }
+}
+
+
 
   void _navigateToAddTransactionScreen() async {
     final newTransaction = await Navigator.push(
@@ -156,9 +190,27 @@ class _TransactionListWidgetState extends State<TransactionListWidget> {  final 
     }
   }
 
-  void _deleteTransaction(MyTransaction transaction) async {
-    // Implement deletion logic here
+void _deleteTransaction(MyTransaction transaction) async {
+  try {
+    CollectionReference transactionsRef =
+    FirebaseFirestore.instance.collection('Transactions');
+    // Query for the document to match transactionID
+    QuerySnapshot querySnapshot = await transactionsRef
+        .where('transactionID', isEqualTo: transaction.transactionID)
+        .get();
+
+    // Check if there's exactly one matching document very small mathematical chance there isn't hopefully
+    if (querySnapshot.docs.length == 1) {
+      // Delete the document
+      querySnapshot.docs.first.reference.delete();
+      print('Transaction deleted successfully');
+    } else {
+      print('Error: Multiple matching documents found');
+    }
+  } catch (e) {
+    print('Error deleting transaction: $e');
   }
+}
 
 
 class AddTransactionScreen extends StatefulWidget {  final String email;
