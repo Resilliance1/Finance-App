@@ -97,6 +97,3 @@ class MyTransaction {
     )..transactionID = map['transactionID'] ?? '';
   }
 }
-
-
-

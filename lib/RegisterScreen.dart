@@ -3,7 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'LoginScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController accountIdController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -12,33 +17,12 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController lnameController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
   final TextEditingController currencyController = TextEditingController();
-  // For inputs make sure the controller of any new widget is 'emailController' for example and not just 'TextEditingController(text: '')' like it was before
-
-  Future<void> registerWithEmailAndPassword(BuildContext context, String email,
-      String password, String fname, String lname, String budget) async {
-    final data = {
-      "Budget": budget,
-      "email": email,
-      "fname": fname,
-      "lname": lname,
-      "password": password
-    };
-    try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      FirebaseFirestore.instance.collection("Users").add(data).then(
-          // From this line
-          (documentSnapshot) => print(
-              "Added Data with ID: ${documentSnapshot.id}")); // to this line is how you write to firestore. 'data' is created above using what you pass to the function.
-      ;
-      Navigator.push(context,
-          new MaterialPageRoute(builder: (context) => new LoginScreen()));
-      // successful signup redirects to login
-    } catch (e) {
-      print("Login Error: $e");
-      // registration error printed in console only atm for devs
-    }
-  }
+  bool emailError = false;
+  bool passwordError = false;
+  bool confirmPasswordError = false;
+  String emailErrorMessage = '';
+  String passwordErrorMessage = '';
+  String confirmPasswordErrorMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -373,8 +357,7 @@ class RegisterScreen extends StatelessWidget {
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.0),
-                          side:
-                          BorderSide(color: Color(0xff9e9e9e), width: 1),
+                          side: BorderSide(color: Color(0xff9e9e9e), width: 1),
                         ),
                         padding: EdgeInsets.all(16),
                         child: Text(
@@ -397,17 +380,33 @@ class RegisterScreen extends StatelessWidget {
                       flex: 1,
                       child: MaterialButton(
                         onPressed: () {
-                          if (passwordController.text ==
-                              confPasswordController
-                                  .text) // simple password check but no error message or input checking yet
-                            registerWithEmailAndPassword(
-                                context,
-                                emailController.text,
-                                passwordController.text,
-                                fnameController.text,
-                                lnameController.text,
-                                amountController
-                                    .text); // calls register function using data from controllers on 'sign up' button press
+                          setState(() {
+                            emailError = !isValidEmail(emailController.text);
+                            passwordError = !isValidPassword(passwordController.text);
+                            confirmPasswordError = passwordController.text != confPasswordController.text;
+
+                            if (emailError) {
+                              emailErrorMessage = 'Invalid email';
+                            } else {
+                              emailErrorMessage = '';
+                            }
+
+                            if (passwordError) {
+                              passwordErrorMessage = 'Password must be at least 6 characters';
+                            } else {
+                              passwordErrorMessage = '';
+                            }
+
+                            if (confirmPasswordError) {
+                              confirmPasswordErrorMessage = 'Passwords do not match';
+                            } else {
+                              confirmPasswordErrorMessage = '';
+                            }
+
+                            if (!emailError && !passwordError && !confirmPasswordError) {
+                              checkExistingEmail();
+                            }
+                          });
                         },
                         color: Color(0xff3a57e8),
                         elevation: 0,
@@ -430,11 +429,80 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: 10),
+                if (emailError)
+                  Text(
+                    emailErrorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                if (passwordError)
+                  Text(
+                    passwordErrorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                if (confirmPasswordError)
+                  Text(
+                    confirmPasswordErrorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  bool isValidEmail(String email) {
+    return RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$").hasMatch(email);
+  }
+
+  bool isValidPassword(String password) {
+    return password.length >= 6;
+  }
+
+  Future<void> checkExistingEmail() async {
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection("Users")
+        .where('email', isEqualTo: emailController.text)
+        .limit(1)
+        .get();
+    final List<DocumentSnapshot> documents = result.docs;
+    if (documents.isNotEmpty) {
+      setState(() {
+        emailError = true;
+        emailErrorMessage = 'Email is already registered';
+      });
+    } else {
+      registerWithEmailAndPassword(
+          context,
+          emailController.text,
+          passwordController.text,
+          fnameController.text,
+          lnameController.text,
+          amountController.text);
+    }
+  }
+
+  Future<void> registerWithEmailAndPassword(BuildContext context, String email,
+      String password, String fname, String lname, String budget) async {
+    final data = {
+      "Budget": budget,
+      "email": email,
+      "fname": fname,
+      "lname": lname,
+      "password": password
+    };
+    try {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      FirebaseFirestore.instance.collection("Users").add(data).then(
+        (documentSnapshot) => print("Added Data with ID: ${documentSnapshot.id}")
+      );
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => LoginScreen()));
+    } catch (e) {
+      print("Login Error: $e");
+    }
   }
 }
