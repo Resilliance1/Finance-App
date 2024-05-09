@@ -20,9 +20,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool emailError = false;
   bool passwordError = false;
   bool confirmPasswordError = false;
+  bool fnameError = false;
+  bool lnameError = false;
   String emailErrorMessage = '';
   String passwordErrorMessage = '';
   String confirmPasswordErrorMessage = '';
+  String fnameErrorMessage = '';
+  String lnameErrorMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -323,7 +327,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         borderSide:
                             BorderSide(color: Color(0xff9e9e9e), width: 1),
                       ),
-                      labelText: "Your budget",
+                      labelText: "Spending Limit",
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.normal,
@@ -384,6 +388,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             emailError = !isValidEmail(emailController.text);
                             passwordError = !isValidPassword(passwordController.text);
                             confirmPasswordError = passwordController.text != confPasswordController.text;
+                            fnameError = fnameController.text.isEmpty;
+                            lnameError = lnameController.text.isEmpty;
 
                             if (emailError) {
                               emailErrorMessage = 'Invalid email';
@@ -403,7 +409,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               confirmPasswordErrorMessage = '';
                             }
 
-                            if (!emailError && !passwordError && !confirmPasswordError) {
+                            if (fnameError) {
+                              fnameErrorMessage = 'Please enter your first name';
+                            } else {
+                              fnameErrorMessage = '';
+                            }
+
+                            if (lnameError) {
+                              lnameErrorMessage = 'Please enter your last name';
+                            } else {
+                              lnameErrorMessage = '';
+                            }
+
+                            if (!emailError && !passwordError && !confirmPasswordError && !fnameError && !lnameError) {
                               checkExistingEmail();
                             }
                           });
@@ -443,6 +461,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 if (confirmPasswordError)
                   Text(
                     confirmPasswordErrorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                if (fnameError)
+                  Text(
+                    fnameErrorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                if (lnameError)
+                  Text(
+                    lnameErrorMessage,
                     style: TextStyle(color: Colors.red),
                   ),
               ],
