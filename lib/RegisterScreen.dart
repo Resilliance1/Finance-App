@@ -20,15 +20,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool emailError = false;
   bool passwordError = false;
   bool confirmPasswordError = false;
+<<<<<<< HEAD
   bool fnameError = false;
   bool lnameError = false;
   bool minBalanceError = false;
   String minBalanceErrorMessage = '';
+=======
+  bool minBalanceError = false;
+>>>>>>> parent of 8e6b478 (Merge branch 'Damon')
   String emailErrorMessage = '';
   String passwordErrorMessage = '';
   String confirmPasswordErrorMessage = '';
-  String fnameErrorMessage = '';
-  String lnameErrorMessage = '';
+  String minBalanceErrorMessage = '';
+
+  bool amountchecker(amount) {
+    // Check if the amount is null
+    if (amount == null) {
+      return true;
+    }
+
+    // Check if the amount is a non-empty string and greater than 0
+    if (int.tryParse(amountController.text) != null &&
+        int.tryParse(amountController.text)! > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   bool amountchecker(amount) {
     // Check if the amount is null
@@ -344,7 +362,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         borderSide:
                             BorderSide(color: Color(0xff9e9e9e), width: 1),
                       ),
-                      labelText: "Spending Limit",
+                      labelText: "Minimum balance goal",
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.normal,
@@ -409,11 +427,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 amountchecker(amountController.text);
                             confirmPasswordError = passwordController.text !=
                                 confPasswordController.text;
+<<<<<<< HEAD
                             fnameError = fnameController.text.isEmpty;
                             lnameError = lnameController.text.isEmpty;
+=======
+>>>>>>> parent of 8e6b478 (Merge branch 'Damon')
 
                             if (emailError) {
                               emailErrorMessage = 'Invalid email';
+                            } else {
+                              emailErrorMessage = '';
+                            }
+
+                            if (minBalanceError) {
+                              minBalanceErrorMessage =
+                                  'please enter a minimum balance';
                             } else {
                               emailErrorMessage = '';
                             }
@@ -432,6 +460,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               confirmPasswordErrorMessage = '';
                             }
 
+<<<<<<< HEAD
                             if (fnameError) {
                               fnameErrorMessage =
                                   'Please enter your first name';
@@ -450,6 +479,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 !confirmPasswordError &&
                                 !fnameError &&
                                 !lnameError &&
+=======
+                            if (!emailError &&
+                                !passwordError &&
+                                !confirmPasswordError &&
+>>>>>>> parent of 8e6b478 (Merge branch 'Damon')
                                 !minBalanceError) {
                               checkExistingEmail();
                             }
@@ -482,6 +516,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     emailErrorMessage,
                     style: TextStyle(color: Colors.red),
                   ),
+                if (minBalanceError)
+                  Text(
+                    minBalanceErrorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
                 if (passwordError)
                   Text(
                     passwordErrorMessage,
@@ -490,16 +529,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 if (confirmPasswordError)
                   Text(
                     confirmPasswordErrorMessage,
-                    style: TextStyle(color: Colors.red),
-                  ),
-                if (fnameError)
-                  Text(
-                    fnameErrorMessage,
-                    style: TextStyle(color: Colors.red),
-                  ),
-                if (lnameError)
-                  Text(
-                    lnameErrorMessage,
                     style: TextStyle(color: Colors.red),
                   ),
               ],

@@ -16,21 +16,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> signInWithEmailAndPassword(
       BuildContext context, String email, String password) async {
     try {
-      // Perform sign in with Firebase Auth
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // Redirect to dashboard upon successful login
       Get.offNamed('/dashboard', arguments: email);
+      // successful login redirects to dashboard screen
     } catch (e) {
-      // Print login error for debugging
       print("Login Error: $e");
-      // Show error message to the user
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Invalid email or password'),
-        duration: Duration(seconds: 3),
-      ));
+      // login error printed in console for devs
     }
   }
 
@@ -107,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Color(0xff000000),
                       ),
                       decoration: InputDecoration(
+                        errorStyle: TextStyle(height: 0),
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
                           borderSide: BorderSide(color: Colors.red, width: 1),
@@ -165,6 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Color(0xff000000),
                       ),
                       decoration: InputDecoration(
+                        errorStyle: TextStyle(height: 0),
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
                           borderSide: BorderSide(color: Colors.red, width: 1),
