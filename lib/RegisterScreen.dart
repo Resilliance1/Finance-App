@@ -22,11 +22,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool confirmPasswordError = false;
   bool fnameError = false;
   bool lnameError = false;
+  bool minBalanceError = false;
+  String minBalanceErrorMessage = '';
   String emailErrorMessage = '';
   String passwordErrorMessage = '';
   String confirmPasswordErrorMessage = '';
   String fnameErrorMessage = '';
   String lnameErrorMessage = '';
+
+  bool amountchecker(amount) {
+    // Check if the amount is null
+    if (amount == null) {
+      return true;
+    }
+
+    // Check if the amount is a non-empty string and greater than 0
+    if (int.tryParse(amountController.text) != null &&
+        int.tryParse(amountController.text)! > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -386,8 +403,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () {
                           setState(() {
                             emailError = !isValidEmail(emailController.text);
-                            passwordError = !isValidPassword(passwordController.text);
-                            confirmPasswordError = passwordController.text != confPasswordController.text;
+                            passwordError =
+                                !isValidPassword(passwordController.text);
+                            minBalanceError =
+                                amountchecker(amountController.text);
+                            confirmPasswordError = passwordController.text !=
+                                confPasswordController.text;
                             fnameError = fnameController.text.isEmpty;
                             lnameError = lnameController.text.isEmpty;
 
@@ -398,19 +419,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }
 
                             if (passwordError) {
-                              passwordErrorMessage = 'Password must be at least 6 characters';
+                              passwordErrorMessage =
+                                  'Password must be at least 6 characters';
                             } else {
                               passwordErrorMessage = '';
                             }
 
                             if (confirmPasswordError) {
-                              confirmPasswordErrorMessage = 'Passwords do not match';
+                              confirmPasswordErrorMessage =
+                                  'Passwords do not match';
                             } else {
                               confirmPasswordErrorMessage = '';
                             }
 
                             if (fnameError) {
-                              fnameErrorMessage = 'Please enter your first name';
+                              fnameErrorMessage =
+                                  'Please enter your first name';
                             } else {
                               fnameErrorMessage = '';
                             }
@@ -421,7 +445,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               lnameErrorMessage = '';
                             }
 
-                            if (!emailError && !passwordError && !confirmPasswordError && !fnameError && !lnameError) {
+                            if (!emailError &&
+                                !passwordError &&
+                                !confirmPasswordError &&
+                                !fnameError &&
+                                !lnameError &&
+                                !minBalanceError) {
                               checkExistingEmail();
                             }
                           });
@@ -482,7 +511,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   bool isValidEmail(String email) {
-    return RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$").hasMatch(email);
+    return RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+        .hasMatch(email);
   }
 
   bool isValidPassword(String password) {
@@ -525,10 +555,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       FirebaseFirestore.instance.collection("Users").add(data).then(
-        (documentSnapshot) => print("Added Data with ID: ${documentSnapshot.id}")
-      );
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => LoginScreen()));
+          (documentSnapshot) =>
+              print("Added Data with ID: ${documentSnapshot.id}"));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     } catch (e) {
       print("Login Error: $e");
     }

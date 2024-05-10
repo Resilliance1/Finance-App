@@ -13,7 +13,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  Future<void> signInWithEmailAndPassword(BuildContext context, String email, String password) async {
+  Future<void> signInWithEmailAndPassword(
+      BuildContext context, String email, String password) async {
     try {
       // Perform sign in with Firebase Auth
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -50,7 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Image(
-                    image: NetworkImage("https://cdn3.iconfinder.com/data/icons/network-and-communications-6/130/291-128.png"),
+                    image: NetworkImage(
+                        "https://cdn3.iconfinder.com/data/icons/network-and-communications-6/130/291-128.png"),
                     height: 90,
                     width: 90,
                     fit: BoxFit.cover,
@@ -91,7 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       textAlign: TextAlign.start,
                       maxLines: 1,
                       validator: (value) {
-                        if (value == null || value.isEmpty || !value.contains('@')) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            !value.contains('@')) {
                           return 'Please enter a valid email address';
                         }
                         return null;
@@ -113,15 +117,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         disabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide(color: Color(0xff9e9e9e), width: 1),
+                          borderSide:
+                              BorderSide(color: Color(0xff9e9e9e), width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide(color: Color(0xff9e9e9e), width: 1),
+                          borderSide:
+                              BorderSide(color: Color(0xff9e9e9e), width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide(color: Color(0xff9e9e9e), width: 1),
+                          borderSide:
+                              BorderSide(color: Color(0xff9e9e9e), width: 1),
                         ),
                         labelText: "Email",
                         labelStyle: TextStyle(
@@ -133,7 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         filled: true,
                         fillColor: Color(0x00f2f2f3),
                         isDense: false,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       ),
                     ),
                   ),
@@ -167,15 +175,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         disabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide(color: Color(0xff9e9e9e), width: 1),
+                          borderSide:
+                              BorderSide(color: Color(0xff9e9e9e), width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide(color: Color(0xff9e9e9e), width: 1),
+                          borderSide:
+                              BorderSide(color: Color(0xff9e9e9e), width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide(color: Color(0xff9e9e9e), width: 1),
+                          borderSide:
+                              BorderSide(color: Color(0xff9e9e9e), width: 1),
                         ),
                         labelText: "Password",
                         labelStyle: TextStyle(
@@ -187,7 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         filled: true,
                         fillColor: Color(0x00f2f2f3),
                         isDense: false,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       ),
                     ),
                   ),
@@ -221,14 +233,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => RegisterScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterScreen()),
                               );
                             },
                             color: Color(0xffffffff),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
-                              side: BorderSide(color: Color(0xff9e9e9e), width: 1),
+                              side: BorderSide(
+                                  color: Color(0xff9e9e9e), width: 1),
                             ),
                             padding: EdgeInsets.all(16),
                             child: Text(
@@ -251,8 +265,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           flex: 1,
                           child: MaterialButton(
                             onPressed: () {
-                              if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-                                signInWithEmailAndPassword(context, emailController.text, passwordController.text);
+                              if (_formKey.currentState != null &&
+                                  _formKey.currentState!.validate()) {
+                                signInWithEmailAndPassword(
+                                    context,
+                                    emailController.text,
+                                    passwordController.text);
                               }
                             },
                             color: Color(0xff3a57e8),
