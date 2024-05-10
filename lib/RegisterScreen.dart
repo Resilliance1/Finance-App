@@ -21,10 +21,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool passwordError = false;
   bool confirmPasswordError = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
   bool fnameError = false;
   bool lnameError = false;
   bool minBalanceError = false;
   String minBalanceErrorMessage = '';
+=======
+  bool minBalanceError = false;
+>>>>>>> parent of 8e6b478 (Merge branch 'Damon')
 =======
   bool minBalanceError = false;
 >>>>>>> parent of 8e6b478 (Merge branch 'Damon')
@@ -47,6 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return true;
     }
   }
+<<<<<<< HEAD
 
   bool amountchecker(amount) {
     // Check if the amount is null
@@ -62,6 +67,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return true;
     }
   }
+=======
+>>>>>>> parent of 8e6b478 (Merge branch 'Damon')
 
   @override
   Widget build(BuildContext context) {
@@ -428,8 +435,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             confirmPasswordError = passwordController.text !=
                                 confPasswordController.text;
 <<<<<<< HEAD
+<<<<<<< HEAD
                             fnameError = fnameController.text.isEmpty;
                             lnameError = lnameController.text.isEmpty;
+=======
+>>>>>>> parent of 8e6b478 (Merge branch 'Damon')
 =======
 >>>>>>> parent of 8e6b478 (Merge branch 'Damon')
 
@@ -461,6 +471,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                             if (fnameError) {
                               fnameErrorMessage =
                                   'Please enter your first name';
@@ -479,6 +490,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 !confirmPasswordError &&
                                 !fnameError &&
                                 !lnameError &&
+=======
+                            if (!emailError &&
+                                !passwordError &&
+                                !confirmPasswordError &&
+>>>>>>> parent of 8e6b478 (Merge branch 'Damon')
 =======
                             if (!emailError &&
                                 !passwordError &&
