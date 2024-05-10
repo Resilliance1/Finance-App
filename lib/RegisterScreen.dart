@@ -20,9 +20,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool emailError = false;
   bool passwordError = false;
   bool confirmPasswordError = false;
+  bool minBalanceError = false;
   String emailErrorMessage = '';
   String passwordErrorMessage = '';
   String confirmPasswordErrorMessage = '';
+  String minBalanceErrorMessage = '';
+
+  bool amountchecker(amount) {
+    // Check if the amount is null
+    if (amount == null) {
+      return true;
+    }
+
+    // Check if the amount is a non-empty string and greater than 0
+    if (int.tryParse(amountController.text) != null &&
+        int.tryParse(amountController.text)! > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -323,7 +340,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         borderSide:
                             BorderSide(color: Color(0xff9e9e9e), width: 1),
                       ),
-                      labelText: "Your budget",
+                      labelText: "Minimum balance goal",
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.normal,
@@ -382,8 +399,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () {
                           setState(() {
                             emailError = !isValidEmail(emailController.text);
-                            passwordError = !isValidPassword(passwordController.text);
-                            confirmPasswordError = passwordController.text != confPasswordController.text;
+                            passwordError =
+                                !isValidPassword(passwordController.text);
+                            minBalanceError =
+                                amountchecker(amountController.text);
+                            confirmPasswordError = passwordController.text !=
+                                confPasswordController.text;
 
                             if (emailError) {
                               emailErrorMessage = 'Invalid email';
@@ -391,19 +412,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               emailErrorMessage = '';
                             }
 
+                            if (minBalanceError) {
+                              minBalanceErrorMessage =
+                                  'please enter a minimum balance';
+                            } else {
+                              emailErrorMessage = '';
+                            }
+
                             if (passwordError) {
-                              passwordErrorMessage = 'Password must be at least 6 characters';
+                              passwordErrorMessage =
+                                  'Password must be at least 6 characters';
                             } else {
                               passwordErrorMessage = '';
                             }
 
                             if (confirmPasswordError) {
-                              confirmPasswordErrorMessage = 'Passwords do not match';
+                              confirmPasswordErrorMessage =
+                                  'Passwords do not match';
                             } else {
                               confirmPasswordErrorMessage = '';
                             }
 
-                            if (!emailError && !passwordError && !confirmPasswordError) {
+                            if (!emailError &&
+                                !passwordError &&
+                                !confirmPasswordError &&
+                                !minBalanceError) {
                               checkExistingEmail();
                             }
                           });
@@ -435,6 +468,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     emailErrorMessage,
                     style: TextStyle(color: Colors.red),
                   ),
+                if (minBalanceError)
+                  Text(
+                    minBalanceErrorMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
                 if (passwordError)
                   Text(
                     passwordErrorMessage,
@@ -454,7 +492,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   bool isValidEmail(String email) {
-    return RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$").hasMatch(email);
+    return RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+        .hasMatch(email);
   }
 
   bool isValidPassword(String password) {
@@ -497,10 +536,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       FirebaseFirestore.instance.collection("Users").add(data).then(
-        (documentSnapshot) => print("Added Data with ID: ${documentSnapshot.id}")
-      );
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => LoginScreen()));
+          (documentSnapshot) =>
+              print("Added Data with ID: ${documentSnapshot.id}"));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     } catch (e) {
       print("Login Error: $e");
     }

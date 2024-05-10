@@ -13,14 +13,16 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final String email;
+  late int userBudget; // Variable to store user's budget
+  List<MyTransaction> transactions = [];
 
   _DashboardScreenState({required this.email});
-  List<MyTransaction> transactions = [];
 
   @override
   void initState() {
     super.initState();
     _loadTransactions();
+    _fetchUserBudget(); // Fetch user's budget when the screen initializes
   }
 
   double calculateTotalBalance(List<MyTransaction> transactions) {
@@ -43,9 +45,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       });
       return;
     }
-
-
-
 
     setState(() {
       transactions = updatedTransactions;
@@ -70,11 +69,85 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+// Fetch user's budget from Firestore
+  Future<void> _fetchUserBudget() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .where("email", isEqualTo: email)
+          .get();
+
+      // Check if any documents are returned
+      if (querySnapshot.docs.isNotEmpty) {
+        // Access the first document in the snapshot
+        DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+
+        // Get the value of the "budget" field from the document
+        String budgetString = documentSnapshot.get('Budget');
+
+        // Convert the budget string to an integer
+        userBudget = int.parse(budgetString);
+        print(userBudget);
+
+        // Check the number of transactions
+        int numberOfTransactions = transactions.length;
+
+        // Check if user has more than 5 transactions
+        if (numberOfTransactions > 5) {
+          // Check if user's balance is nearing the budget
+          double totalBalance = calculateTotalBalance(transactions);
+          print(totalBalance);
+          if (calculateTotalBalance(transactions) <= userBudget * 1.3) {
+            _showBudgetnearSnackbar();
+          } else if (calculateTotalBalance(transactions) == userBudget) {
+            _showBudgetreachedSnackbar();
+          } else if (calculateTotalBalance(transactions) < userBudget) {
+            _showBudgetbelowSnackbar();
+          }
+        } else {
+          print('User has less than 5 transactions.');
+        }
+      } else {
+        print('No documents found for the email: $email');
+      }
+    } catch (e) {
+      print("Error fetching user's budget: $e");
+    }
+  }
+
+  // Methods to show snackbar notification
+  void _showBudgetnearSnackbar() {
+    Get.snackbar(
+      'Budget Alert',
+      'Your balance is nearing your budget!',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+
+  void _showBudgetreachedSnackbar() {
+    Get.snackbar(
+      'Budget Alert',
+      'Your balance at your budget!',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+
+  void _showBudgetbelowSnackbar() {
+    Get.snackbar(
+      'Budget Alert',
+      'Your balance is lower than your budget',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+
   void _editTransactionsList(List<MyTransaction> transactions) async {
-    final updatedTransactionList = await Get.offAllNamed('/edit', arguments: email);
+    final updatedTransactionList =
+        await Get.offAllNamed('/edit', arguments: email);
     if (updatedTransactionList != null) {
-      setState(() {
-      });
+      setState(() {});
       _loadTransactions();
     }
   }
@@ -169,33 +242,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   void _navigateSettings({required String email}) {
     Get.offAllNamed('/settings', arguments: email);
   }
 }
 
-class RecentListWidget extends StatelessWidget { //
+class RecentListWidget extends StatelessWidget {
   final List<MyTransaction> transactions;
 
   RecentListWidget({required this.transactions});
 
   @override
-  Widget build(BuildContext context) { // order transactions put last 5 in list widget
+  Widget build(BuildContext context) {
+    // order transactions put last 5 in list widget
     // Sort transactions by time in descending order
     transactions.sort((a, b) => b.time.compareTo(a.time));
 
-    List<MyTransaction> recentTransactions = transactions.take(5).toList();
+    List<MyTransaction> recentTransactions = transactions.take(10).toList();
 
     return ListView.builder(
       itemCount: recentTransactions.length,
       itemBuilder: (context, index) {
         MyTransaction transaction = recentTransactions[index];
         return ListTile(
-          title: Text("£${transaction.value} - ${transaction.description} - ${transaction.category}")
+          title: Text(
+              "£${transaction.value} - ${transaction.description} - ${transaction.category}"),
         );
       },
     );
   }
 }
-
